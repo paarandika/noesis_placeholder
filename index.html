@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thinking Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Fredoka:wght@400;600&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -20,6 +21,7 @@
       radial-gradient(circle at 80% 20%, #f5ead8 0%, transparent 50%);
     overflow: hidden;
     cursor: crosshair;
+    font-family: 'Gaegu', cursive, sans-serif;
   }
 
   .scene {
@@ -59,7 +61,7 @@
   .bubble-dot:nth-child(3) { width: 14px; height: 14px; bottom: -80px; left: 48%; }
 
   .thought-text {
-    font-family: 'Gaegu', cursive;
+    font-family: 'Gaegu', cursive, sans-serif;
     font-size: 26px;
     font-weight: 700;
     color: #3a3a3a;
@@ -82,7 +84,6 @@
     transition: transform .15s ease-out;
   }
 
-  /* Head */
   .head {
     position: relative;
     width: 180px;
@@ -97,7 +98,6 @@
     transform-origin: bottom center;
   }
 
-  /* Antenna stem */
   .head::before {
     content: '';
     position: absolute;
@@ -134,7 +134,6 @@
     50% { background: #ffeb3b; }
   }
 
-  /* Excited antenna */
   .antenna-ball.excited {
     animation: antennaWiggle .3s ease-in-out infinite;
   }
@@ -144,7 +143,6 @@
     75% { transform: translateX(-50%) rotate(-15deg) scale(1.2); }
   }
 
-  /* Eyes */
   .eyes {
     display: flex;
     justify-content: center;
@@ -164,10 +162,7 @@
     transition: transform .2s ease;
   }
 
-  /* Wide eyes on close mouse */
-  .eye.wide {
-    transform: scaleY(1.2) scaleX(1.1);
-  }
+  .eye.wide { transform: scaleY(1.2) scaleX(1.1); }
 
   .pupil {
     width: 16px;
@@ -178,7 +173,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: transform .08s ease-out;
+    transition: transform .08s ease-out, width .2s ease, height .2s ease;
   }
   .pupil::after {
     content: '';
@@ -189,13 +184,8 @@
     top: 2px; right: 2px;
   }
 
-  /* Big pupil when close */
-  .pupil.big {
-    width: 20px;
-    height: 20px;
-  }
+  .pupil.big { width: 20px; height: 20px; }
 
-  /* Mouth */
   .mouth {
     width: 40px;
     height: 10px;
@@ -216,7 +206,6 @@
     height: 14px;
   }
 
-  /* Cheek bolts */
   .bolt {
     position: absolute;
     width: 14px; height: 14px;
@@ -236,14 +225,14 @@
     font-weight: bold;
     color: #3a3a3a;
     line-height: 1;
+    font-family: monospace;
   }
 
-  /* Blush on cheeks */
   .blush {
     position: absolute;
     width: 28px;
     height: 16px;
-    background: rgba(255,140,140,.0);
+    background: rgba(255,140,140,0);
     border-radius: 50%;
     top: 62%;
     transition: background .4s ease;
@@ -252,7 +241,6 @@
   .blush.right { right: 6px; }
   .blush.visible { background: rgba(255,140,140,.45); }
 
-  /* Neck */
   .neck {
     width: 40px;
     height: 20px;
@@ -264,7 +252,6 @@
     position: relative;
   }
 
-  /* Body */
   .body {
     width: 220px;
     height: 160px;
@@ -304,14 +291,12 @@
   .light:nth-child(5) { background: #96e6a1; animation: blink2 1.3s .3s infinite; }
   .light:nth-child(6) { background: #dda0dd; animation: blink3 2.5s .8s infinite; }
 
-  /* Fast blink when mouse is close */
   .light.fast { animation-duration: .3s !important; }
 
   @keyframes blink1 { 0%,49%{opacity:1}50%,100%{opacity:.2} }
   @keyframes blink2 { 0%,39%{opacity:.2}40%,79%{opacity:1}80%,100%{opacity:.2} }
   @keyframes blink3 { 0%,59%{opacity:1}60%,100%{opacity:.3} }
 
-  /* Arms */
   .arm {
     position: absolute;
     width: 30px;
@@ -339,7 +324,6 @@
     box-shadow: 2px 2px 0 #3a3a3a;
   }
 
-  /* Wave arm */
   .arm.wave {
     animation: waveArm .6s ease-in-out infinite;
   }
@@ -348,7 +332,6 @@
     50% { transform: rotate(-40deg); }
   }
 
-  /* Legs */
   .legs {
     display: flex;
     justify-content: center;
@@ -385,7 +368,6 @@
     transition: transform .3s ease;
   }
 
-  /* Steam */
   .steam-wrap { position: relative; height: 0; }
   .steam {
     position: absolute;
@@ -398,7 +380,6 @@
   .steam:nth-child(2) { left: 50px; width: 14px; height: 14px; animation-delay: 1s; }
   .steam:nth-child(3) { left: 130px; width: 16px; height: 16px; animation-delay: 2s; }
 
-  /* Faster steam when processing hard */
   .steam.fast { animation-duration: 1.2s !important; }
 
   @keyframes steamRise {
@@ -406,7 +387,6 @@
     100% { transform: translateY(-40px) scale(2); opacity: 0; }
   }
 
-  /* Idle gentle sway */
   .machine.idle {
     animation: idleSway 4s ease-in-out infinite;
   }
@@ -415,7 +395,6 @@
     50% { transform: translateX(-50%) rotate(.8deg); }
   }
 
-  /* Click spark */
   .click-spark {
     position: fixed;
     pointer-events: none;
@@ -426,7 +405,7 @@
     width: 6px; height: 6px;
     background: #ffeb3b;
     border-radius: 50%;
-    animation: sparkBurst .6s ease-out forwards;
+    animation: sparkBurst .5s ease-out forwards;
   }
   @keyframes sparkBurst {
     0% { transform: translate(0,0) scale(1); opacity: 1; }
@@ -490,219 +469,224 @@
 </div>
 
 <script>
-  const scene    = document.getElementById('scene');
-  const head     = document.getElementById('head');
-  const pupilL   = document.getElementById('pupilL');
-  const pupilR   = document.getElementById('pupilR');
-  const eyeL     = document.getElementById('eyeL');
-  const eyeR     = document.getElementById('eyeR');
-  const mouth    = document.getElementById('mouth');
-  const antenna  = document.getElementById('antenna');
-  const armL     = document.getElementById('armL');
-  const armR     = document.getElementById('armR');
-  const blushL   = document.getElementById('blushL');
-  const blushR   = document.getElementById('blushR');
-  const machine  = document.getElementById('machine');
-  const shadow   = document.getElementById('shadow');
-  const bubble   = document.getElementById('bubble');
-  const thoughtEl= document.getElementById('thought');
-  const lights   = document.querySelectorAll('.light');
-  const steams   = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3')];
+  (function() {
+    var scene    = document.getElementById('scene');
+    var head     = document.getElementById('head');
+    var pupilL   = document.getElementById('pupilL');
+    var pupilR   = document.getElementById('pupilR');
+    var eyeL     = document.getElementById('eyeL');
+    var eyeR     = document.getElementById('eyeR');
+    var mouth    = document.getElementById('mouth');
+    var antenna  = document.getElementById('antenna');
+    var armL     = document.getElementById('armL');
+    var armR     = document.getElementById('armR');
+    var blushL   = document.getElementById('blushL');
+    var blushR   = document.getElementById('blushR');
+    var machine  = document.getElementById('machine');
+    var shadow   = document.getElementById('shadow');
+    var thoughtEl= document.getElementById('thought');
+    var lights   = document.querySelectorAll('.light');
+    var steams   = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3')];
 
-  // --- Thoughts ---
-  const idleThoughts = ["Hmm...", "What if... 🤔", "42?", "Does not compute", "Thinking...", "Beep boop 🤖", "Is water wet?", "💡 Oh! Nope.", "Why though?", "∞ loops..."];
-  const closeThoughts = ["Oh! Hello!", "Hi there! 👋", "You're close!", "Hey friend!", "Boop?", "I see you! 👀", "*blushes*"];
-  const fastThoughts = ["Whoa slow down!", "So fast! 💨", "Speedy cursor!", "Zoom zoom!", "Can't keep up!"];
-  const clickThoughts = ["Ouch! 😵", "Hey! That tickles!", "Boop!", "⚡ Zap!", "*clank clank*", "I felt that!"];
+    var idleThoughts = ["Hmm...", "What if...?", "42?", "Does not compute", "Thinking...", "Beep boop", "Is water wet?", "Oh! Nope.", "Why though?", "Loops..."];
+    var closeThoughts = ["Oh! Hello!", "Hi there!", "You're close!", "Hey friend!", "Boop?", "I see you!", "Hehe"];
+    var fastThoughts = ["Whoa slow down!", "So fast!", "Speedy cursor!", "Zoom zoom!", "Can't keep up!"];
+    var clickThoughts = ["Ouch!", "Hey! That tickles!", "Boop!", "Zap!", "Clank clank!", "I felt that!"];
 
-  let currentThought = '';
-  let thoughtTimer = null;
-  let mouseSpeed = 0;
-  let lastX = 0, lastY = 0;
-  let isClose = false;
-  let idleIdx = 0;
-  let wasIdle = true;
+    var currentThought = '';
+    var thoughtTimer = null;
+    var mouseSpeed = 0;
+    var lastX = 0;
+    var lastY = 0;
+    var isClose = false;
+    var idleIdx = 0;
 
-  function setThought(text) {
-    if (text === currentThought) return;
-    currentThought = text;
-    thoughtEl.style.opacity = '0';
-    setTimeout(() => {
-      thoughtEl.textContent = text;
-      thoughtEl.style.opacity = '1';
-    }, 200);
-  }
-
-  function scheduleIdleThought() {
-    clearTimeout(thoughtTimer);
-    thoughtTimer = setTimeout(() => {
-      idleIdx = (idleIdx + 1) % idleThoughts.length;
-      setThought(idleThoughts[idleIdx]);
-      scheduleIdleThought();
-    }, 4000);
-  }
-
-  scheduleIdleThought();
-
-  // --- Mouse tracking ---
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-
-  document.addEventListener('mousemove', (e) => {
-    const rect = scene.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height * 0.55;
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
-    const dist = Math.hypot(dx, dy);
-
-    // Speed
-    const sx = e.clientX - lastX;
-    const sy = e.clientY - lastY;
-    mouseSpeed = Math.hypot(sx, sy);
-    lastX = e.clientX;
-    lastY = e.clientY;
-
-    // Proximity zones
-    const close = dist < 200;
-    const veryClose = dist < 110;
-
-    // Head tilt toward mouse
-    const tiltX = clamp(dx / 30, -8, 8);
-    const tiltY = clamp(dy / 50, -4, 4);
-    head.style.transform = `rotate(${tiltX * 0.5}deg) translateY(${tiltY * 0.3}px)`;
-
-    // Body lean
-    machine.classList.remove('idle');
-    machine.style.transform = `translateX(-50%) rotate(${tiltX * 0.15}deg)`;
-
-    // Pupil tracking
-    const eyeRectL = eyeL.getBoundingClientRect();
-    const eyeRectR = eyeR.getBoundingClientRect();
-
-    [
-      { pupil: pupilL, rect: eyeRectL },
-      { pupil: pupilR, rect: eyeRectR }
-    ].forEach(({ pupil, rect }) => {
-      const ecx = rect.left + rect.width / 2;
-      const ecy = rect.top + rect.height / 2;
-      const edx = e.clientX - ecx;
-      const edy = e.clientY - ecy;
-      const angle = Math.atan2(edy, edx);
-      const maxR = 9;
-      const r = Math.min(maxR, Math.hypot(edx, edy) / 15);
-      const px = Math.cos(angle) * r;
-      const py = Math.sin(angle) * r;
-      pupil.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`;
-    });
-
-    // Eye widening when close
-    eyeL.classList.toggle('wide', veryClose);
-    eyeR.classList.toggle('wide', veryClose);
-    pupilL.classList.toggle('big', veryClose);
-    pupilR.classList.toggle('big', veryClose);
-
-    // Blush
-    blushL.classList.toggle('visible', veryClose);
-    blushR.classList.toggle('visible', veryClose);
-
-    // Mouth
-    mouth.classList.remove('surprised', 'happy');
-    if (mouseSpeed > 40) {
-      mouth.classList.add('surprised');
-    } else if (veryClose) {
-      mouth.classList.add('happy');
+    function setThought(text) {
+      if (text === currentThought) return;
+      currentThought = text;
+      thoughtEl.style.opacity = '0';
+      setTimeout(function() {
+        thoughtEl.textContent = text;
+        thoughtEl.style.opacity = '1';
+      }, 200);
     }
 
-    // Antenna
-    antenna.classList.toggle('excited', close);
-
-    // Lights go fast when close
-    lights.forEach(l => l.classList.toggle('fast', close));
-
-    // Steam goes fast when close
-    steams.forEach(s => s.classList.toggle('fast', veryClose));
-
-    // Arm wave when close
-    if (close && !isClose) {
-      armR.classList.add('wave');
-      setTimeout(() => armR.classList.remove('wave'), 1800);
-    }
-
-    // Shadow
-    shadow.style.transform = `scaleX(${veryClose ? 0.85 : 1})`;
-
-    // Thoughts based on state
-    if (mouseSpeed > 50) {
-      setThought(fastThoughts[Math.floor(Math.random() * fastThoughts.length)]);
+    function scheduleIdleThought() {
       clearTimeout(thoughtTimer);
-      scheduleIdleThought();
-      wasIdle = false;
-    } else if (veryClose && !isClose) {
-      setThought(closeThoughts[Math.floor(Math.random() * closeThoughts.length)]);
-      clearTimeout(thoughtTimer);
-      scheduleIdleThought();
-      wasIdle = false;
+      thoughtTimer = setTimeout(function() {
+        idleIdx = (idleIdx + 1) % idleThoughts.length;
+        setThought(idleThoughts[idleIdx]);
+        scheduleIdleThought();
+      }, 4000);
     }
 
-    isClose = close;
-  });
-
-  // Reset to idle when mouse leaves
-  let idleTimeout;
-  document.addEventListener('mousemove', () => {
-    clearTimeout(idleTimeout);
-    idleTimeout = setTimeout(() => {
-      machine.classList.add('idle');
-      machine.style.transform = '';
-      head.style.transform = '';
-      eyeL.classList.remove('wide');
-      eyeR.classList.remove('wide');
-      pupilL.classList.remove('big');
-      pupilR.classList.remove('big');
-      blushL.classList.remove('visible');
-      blushR.classList.remove('visible');
-      mouth.classList.remove('surprised', 'happy');
-      antenna.classList.remove('excited');
-      lights.forEach(l => l.classList.remove('fast'));
-      steams.forEach(s => s.classList.remove('fast'));
-      pupilL.style.transform = 'translate(-50%, -50%)';
-      pupilR.style.transform = 'translate(-50%, -50%)';
-      shadow.style.transform = '';
-    }, 2000);
-  });
-
-  // --- Click reaction ---
-  document.addEventListener('click', (e) => {
-    setThought(clickThoughts[Math.floor(Math.random() * clickThoughts.length)]);
-    clearTimeout(thoughtTimer);
     scheduleIdleThought();
 
-    // Quick squash & stretch
-    machine.style.transition = 'transform .1s ease';
-    machine.style.transform = `translateX(-50%) scaleY(0.92) scaleX(1.06)`;
-    setTimeout(() => {
-      machine.style.transition = 'transform .3s ease';
-      machine.style.transform = `translateX(-50%) scaleY(1) scaleX(1)`;
-    }, 120);
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-    // Sparks
-    const spark = document.createElement('div');
-    spark.className = 'click-spark';
-    spark.style.left = e.clientX + 'px';
-    spark.style.top = e.clientY + 'px';
-    for (let i = 0; i < 8; i++) {
-      const s = document.createElement('span');
-      const angle = (Math.PI * 2 / 8) * i;
-      const dist = 20 + Math.random() * 25;
-      s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
-      s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
-      s.style.animation = `sparkBurst .5s ease-out forwards`;
-      s.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
-      spark.appendChild(s);
-    }
-    document.body.appendChild(spark);
-    setTimeout(() => spark.remove(), 600);
-  });
+    document.addEventListener('mousemove', function(e) {
+      var rect = scene.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height * 0.55;
+      var dx = e.clientX - cx;
+      var dy = e.clientY - cy;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+
+      var sx = e.clientX - lastX;
+      var sy = e.clientY - lastY;
+      mouseSpeed = Math.sqrt(sx * sx + sy * sy);
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      var close = dist < 200;
+      var veryClose = dist < 110;
+
+      var tiltX = clamp(dx / 30, -8, 8);
+      var tiltY = clamp(dy / 50, -4, 4);
+      head.style.transform = 'rotate(' + (tiltX * 0.5) + 'deg) translateY(' + (tiltY * 0.3) + 'px)';
+
+      machine.classList.remove('idle');
+      machine.style.transform = 'translateX(-50%) rotate(' + (tiltX * 0.15) + 'deg)';
+
+      var eyeRectL = eyeL.getBoundingClientRect();
+      var eyeRectR = eyeR.getBoundingClientRect();
+
+      var eyesArr = [
+        { pupil: pupilL, rect: eyeRectL },
+        { pupil: pupilR, rect: eyeRectR }
+      ];
+
+      for (var i = 0; i < eyesArr.length; i++) {
+        var pupil = eyesArr[i].pupil;
+        var er = eyesArr[i].rect;
+        var ecx = er.left + er.width / 2;
+        var ecy = er.top + er.height / 2;
+        var edx = e.clientX - ecx;
+        var edy = e.clientY - ecy;
+        var angle = Math.atan2(edy, edx);
+        var maxR = 9;
+        var r = Math.min(maxR, Math.sqrt(edx * edx + edy * edy) / 15);
+        var px = Math.cos(angle) * r;
+        var py = Math.sin(angle) * r;
+        pupil.style.transform = 'translate(calc(-50% + ' + px + 'px), calc(-50% + ' + py + 'px))';
+      }
+
+      if (veryClose) {
+        eyeL.classList.add('wide');
+        eyeR.classList.add('wide');
+        pupilL.classList.add('big');
+        pupilR.classList.add('big');
+      } else {
+        eyeL.classList.remove('wide');
+        eyeR.classList.remove('wide');
+        pupilL.classList.remove('big');
+        pupilR.classList.remove('big');
+      }
+
+      if (veryClose) {
+        blushL.classList.add('visible');
+        blushR.classList.add('visible');
+      } else {
+        blushL.classList.remove('visible');
+        blushR.classList.remove('visible');
+      }
+
+      mouth.classList.remove('surprised', 'happy');
+      if (mouseSpeed > 40) {
+        mouth.classList.add('surprised');
+      } else if (veryClose) {
+        mouth.classList.add('happy');
+      }
+
+      if (close) {
+        antenna.classList.add('excited');
+      } else {
+        antenna.classList.remove('excited');
+      }
+
+      for (var j = 0; j < lights.length; j++) {
+        if (close) { lights[j].classList.add('fast'); }
+        else { lights[j].classList.remove('fast'); }
+      }
+
+      for (var k = 0; k < steams.length; k++) {
+        if (veryClose) { steams[k].classList.add('fast'); }
+        else { steams[k].classList.remove('fast'); }
+      }
+
+      if (close && !isClose) {
+        armR.classList.add('wave');
+        setTimeout(function() { armR.classList.remove('wave'); }, 1800);
+      }
+
+      shadow.style.transform = veryClose ? 'scaleX(0.85)' : 'scaleX(1)';
+
+      if (mouseSpeed > 50) {
+        setThought(fastThoughts[Math.floor(Math.random() * fastThoughts.length)]);
+        clearTimeout(thoughtTimer);
+        scheduleIdleThought();
+      } else if (veryClose && !isClose) {
+        setThought(closeThoughts[Math.floor(Math.random() * closeThoughts.length)]);
+        clearTimeout(thoughtTimer);
+        scheduleIdleThought();
+      }
+
+      isClose = close;
+    });
+
+    var idleTimeout;
+    document.addEventListener('mousemove', function() {
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(function() {
+        machine.classList.add('idle');
+        machine.style.transform = '';
+        head.style.transform = '';
+        eyeL.classList.remove('wide');
+        eyeR.classList.remove('wide');
+        pupilL.classList.remove('big');
+        pupilR.classList.remove('big');
+        blushL.classList.remove('visible');
+        blushR.classList.remove('visible');
+        mouth.classList.remove('surprised', 'happy');
+        antenna.classList.remove('excited');
+        for (var j = 0; j < lights.length; j++) lights[j].classList.remove('fast');
+        for (var k = 0; k < steams.length; k++) steams[k].classList.remove('fast');
+        pupilL.style.transform = 'translate(-50%, -50%)';
+        pupilR.style.transform = 'translate(-50%, -50%)';
+        shadow.style.transform = '';
+      }, 2000);
+    });
+
+    document.addEventListener('click', function(e) {
+      setThought(clickThoughts[Math.floor(Math.random() * clickThoughts.length)]);
+      clearTimeout(thoughtTimer);
+      scheduleIdleThought();
+
+      machine.style.transition = 'transform .1s ease';
+      machine.style.transform = 'translateX(-50%) scaleY(0.92) scaleX(1.06)';
+      setTimeout(function() {
+        machine.style.transition = 'transform .3s ease';
+        machine.style.transform = 'translateX(-50%) scaleY(1) scaleX(1)';
+      }, 120);
+
+      var spark = document.createElement('div');
+      spark.className = 'click-spark';
+      spark.style.left = e.clientX + 'px';
+      spark.style.top = e.clientY + 'px';
+      for (var i = 0; i < 8; i++) {
+        var s = document.createElement('span');
+        var a = (Math.PI * 2 / 8) * i;
+        var d = 20 + Math.random() * 25;
+        var tx = Math.cos(a) * d;
+        var ty = Math.sin(a) * d;
+        s.style.animation = 'sparkBurst .5s ease-out forwards';
+        s.style.transform = 'translate(' + tx + 'px, ' + ty + 'px)';
+        spark.appendChild(s);
+      }
+      document.body.appendChild(spark);
+      setTimeout(function() { spark.remove(); }, 600);
+    });
+  })();
 </script>
 
 </body>
