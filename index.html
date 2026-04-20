@@ -1,9 +1,693 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0e6d3;
+    background-image:
+      radial-gradient(circle at 20% 80%, #e8d5b8 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, #f5ead8 0%, transparent 50%);
+    overflow: hidden;
+    cursor: crosshair;
+    font-family: 'Gaegu', cursive, sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 500px;
+    height: 620px;
+  }
+
+  /* ===== THOUGHT BUBBLE ===== */
+  .thought-bubble {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 130px;
+    background: #fff;
+    border-radius: 60px;
+    border: 3px solid #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bubbleFloat 3s ease-in-out infinite;
+    box-shadow: 4px 4px 0 #3a3a3a;
+    transition: transform .3s ease, width .4s ease;
+  }
+
+  .bubble-dot {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #3a3a3a;
+    box-shadow: 3px 3px 0 #3a3a3a;
+  }
+  .bubble-dot:nth-child(1) { width: 36px; height: 36px; bottom: -42px; left: 55%; }
+  .bubble-dot:nth-child(2) { width: 22px; height: 22px; bottom: -65px; left: 52%; }
+  .bubble-dot:nth-child(3) { width: 14px; height: 14px; bottom: -80px; left: 48%; }
+
+  .thought-text {
+    font-family: 'Gaegu', cursive, sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #3a3a3a;
+    text-align: center;
+    padding: 10px 20px;
+    transition: opacity .4s ease;
+  }
+
+  @keyframes bubbleFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+  }
+
+  /* ===== MACHINE ===== */
+  .machine {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform .15s ease-out;
+  }
+
+  .head {
+    position: relative;
+    width: 180px;
+    height: 150px;
+    background: #b0b8c4;
+    border: 3px solid #3a3a3a;
+    border-radius: 30px 30px 20px 20px;
+    margin: 0 auto;
+    box-shadow: 4px 4px 0 #3a3a3a;
+    z-index: 2;
+    transition: transform .12s ease-out;
+    transform-origin: bottom center;
+  }
+
+  .head::before {
+    content: '';
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 25px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    transition: transform .2s ease-out;
+    transform-origin: bottom center;
+  }
+
+  .antenna-ball {
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: #ff6b6b;
+    border: 3px solid #3a3a3a;
+    border-radius: 50%;
+    animation: antennaPulse 1.5s ease-in-out infinite;
+    box-shadow: 3px 3px 0 #3a3a3a;
+    transition: transform .2s ease-out;
+  }
+
+  @keyframes antennaPulse {
+    0%, 100% { background: #ff6b6b; }
+    50% { background: #ffeb3b; }
+  }
+
+  .antenna-ball.excited {
+    animation: antennaWiggle .3s ease-in-out infinite;
+  }
+  @keyframes antennaWiggle {
+    0%, 100% { transform: translateX(-50%) rotate(0deg) scale(1.1); }
+    25% { transform: translateX(-50%) rotate(15deg) scale(1.2); }
+    75% { transform: translateX(-50%) rotate(-15deg) scale(1.2); }
+  }
+
+  .eyes {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding-top: 30px;
+  }
+
+  .eye {
+    width: 40px;
+    height: 46px;
+    background: #fff;
+    border: 3px solid #3a3a3a;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,.1);
+    transition: transform .2s ease;
+  }
+
+  .eye.wide { transform: scaleY(1.2) scaleX(1.1); }
+
+  .pupil {
+    width: 16px;
+    height: 16px;
+    background: #3a3a3a;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform .08s ease-out, width .2s ease, height .2s ease;
+  }
+  .pupil::after {
+    content: '';
+    width: 5px; height: 5px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; right: 2px;
+  }
+
+  .pupil.big { width: 20px; height: 20px; }
+
+  .mouth {
+    width: 40px;
+    height: 10px;
+    border: 3px solid #3a3a3a;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    margin: 18px auto 0;
+    transition: all .25s ease;
+  }
+  .mouth.surprised {
+    width: 22px;
+    height: 18px;
+    border-radius: 50%;
+    border-top: 3px solid #3a3a3a;
+  }
+  .mouth.happy {
+    width: 50px;
+    height: 14px;
+  }
+
+  .bolt {
+    position: absolute;
+    width: 14px; height: 14px;
+    background: #8a9bae;
+    border: 2px solid #3a3a3a;
+    border-radius: 50%;
+    top: 55%;
+  }
+  .bolt.left { left: 12px; }
+  .bolt.right { right: 12px; }
+  .bolt::before {
+    content: '+';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: bold;
+    color: #3a3a3a;
+    line-height: 1;
+    font-family: monospace;
+  }
+
+  .blush {
+    position: absolute;
+    width: 28px;
+    height: 16px;
+    background: rgba(255,140,140,0);
+    border-radius: 50%;
+    top: 62%;
+    transition: background .4s ease;
+  }
+  .blush.left { left: 6px; }
+  .blush.right { right: 6px; }
+  .blush.visible { background: rgba(255,140,140,.45); }
+
+  .neck {
+    width: 40px;
+    height: 20px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-top: none;
+    margin: 0 auto;
+    z-index: 1;
+    position: relative;
+  }
+
+  .body {
+    width: 220px;
+    height: 160px;
+    background: #c0c8d4;
+    border: 3px solid #3a3a3a;
+    border-radius: 20px;
+    margin: -3px auto 0;
+    position: relative;
+    box-shadow: 4px 4px 0 #3a3a3a;
+  }
+
+  .chest-panel {
+    width: 100px;
+    height: 70px;
+    background: #e8ecf0;
+    border: 3px solid #3a3a3a;
+    border-radius: 10px;
+    margin: 20px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    flex-wrap: wrap;
+  }
+
+  .light {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid #3a3a3a;
+    transition: background .2s;
+  }
+  .light:nth-child(1) { background: #ff6b6b; animation: blink1 2s infinite; }
+  .light:nth-child(2) { background: #4ecdc4; animation: blink2 1.5s infinite; }
+  .light:nth-child(3) { background: #ffeb3b; animation: blink3 1.8s infinite; }
+  .light:nth-child(4) { background: #45b7d1; animation: blink1 2.2s .5s infinite; }
+  .light:nth-child(5) { background: #96e6a1; animation: blink2 1.3s .3s infinite; }
+  .light:nth-child(6) { background: #dda0dd; animation: blink3 2.5s .8s infinite; }
+
+  .light.fast { animation-duration: .3s !important; }
+
+  @keyframes blink1 { 0%,49%{opacity:1}50%,100%{opacity:.2} }
+  @keyframes blink2 { 0%,39%{opacity:.2}40%,79%{opacity:1}80%,100%{opacity:.2} }
+  @keyframes blink3 { 0%,59%{opacity:1}60%,100%{opacity:.3} }
+
+  .arm {
+    position: absolute;
+    width: 30px;
+    height: 90px;
+    background: #b0b8c4;
+    border: 3px solid #3a3a3a;
+    border-radius: 15px;
+    top: 20px;
+    box-shadow: 3px 3px 0 #3a3a3a;
+    transform-origin: top center;
+    transition: transform .3s ease;
+  }
+  .arm.left { left: -35px; transform: rotate(3deg); }
+  .arm.right { right: -35px; transform: rotate(-3deg); }
+
+  .hand {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px; height: 22px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-radius: 50%;
+    box-shadow: 2px 2px 0 #3a3a3a;
+  }
+
+  .arm.wave {
+    animation: waveArm .6s ease-in-out infinite;
+  }
+  @keyframes waveArm {
+    0%, 100% { transform: rotate(-20deg); }
+    50% { transform: rotate(-40deg); }
+  }
+
+  .legs {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: -3px;
+  }
+  .leg {
+    width: 36px;
+    height: 50px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 3px 3px 0 #3a3a3a;
+    position: relative;
+  }
+  .foot {
+    position: absolute;
+    bottom: -10px;
+    left: -8px;
+    width: 52px;
+    height: 16px;
+    background: #707a86;
+    border: 3px solid #3a3a3a;
+    border-radius: 6px 12px 8px 8px;
+    box-shadow: 3px 3px 0 #3a3a3a;
+  }
+
+  .shadow {
+    width: 240px;
+    height: 20px;
+    background: rgba(0,0,0,.12);
+    border-radius: 50%;
+    margin: 18px auto 0;
+    transition: transform .3s ease;
+  }
+
+  .steam-wrap { position: relative; height: 0; }
+  .steam {
+    position: absolute;
+    top: -55px;
+    border-radius: 50%;
+    background: rgba(180,190,200,.5);
+    animation: steamRise 3s ease-out infinite;
+  }
+  .steam:nth-child(1) { left: 30px; width: 18px; height: 18px; animation-delay: 0s; }
+  .steam:nth-child(2) { left: 50px; width: 14px; height: 14px; animation-delay: 1s; }
+  .steam:nth-child(3) { left: 130px; width: 16px; height: 16px; animation-delay: 2s; }
+
+  .steam.fast { animation-duration: 1.2s !important; }
+
+  @keyframes steamRise {
+    0% { transform: translateY(0) scale(1); opacity: .6; }
+    100% { transform: translateY(-40px) scale(2); opacity: 0; }
+  }
+
+  .machine.idle {
+    animation: idleSway 4s ease-in-out infinite;
+  }
+  @keyframes idleSway {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    50% { transform: translateX(-50%) rotate(.8deg); }
+  }
+
+  .click-spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .click-spark span {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: #ffeb3b;
+    border-radius: 50%;
+    animation: sparkBurst .5s ease-out forwards;
+  }
+  @keyframes sparkBurst {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>
 </head>
 <body>
-<h1>Hello World</h1>
+
+<div class="scene" id="scene">
+
+  <div class="thought-bubble" id="bubble">
+    <div class="bubble-dot"></div>
+    <div class="bubble-dot"></div>
+    <div class="bubble-dot"></div>
+    <div class="thought-text" id="thought">Hmm...</div>
+  </div>
+
+  <div class="machine idle" id="machine">
+    <div class="steam-wrap">
+      <div class="steam" id="s1"></div>
+      <div class="steam" id="s2"></div>
+      <div class="steam" id="s3"></div>
+    </div>
+
+    <div class="head" id="head">
+      <div class="antenna-ball" id="antenna"></div>
+      <div class="eyes">
+        <div class="eye" id="eyeL"><div class="pupil" id="pupilL"></div></div>
+        <div class="eye" id="eyeR"><div class="pupil" id="pupilR"></div></div>
+      </div>
+      <div class="mouth" id="mouth"></div>
+      <div class="bolt left"></div>
+      <div class="bolt right"></div>
+      <div class="blush left" id="blushL"></div>
+      <div class="blush right" id="blushR"></div>
+    </div>
+
+    <div class="neck"></div>
+
+    <div class="body">
+      <div class="chest-panel" id="panel">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+      </div>
+      <div class="arm left" id="armL"><div class="hand"></div></div>
+      <div class="arm right" id="armR"><div class="hand"></div></div>
+    </div>
+
+    <div class="legs">
+      <div class="leg"><div class="foot"></div></div>
+      <div class="leg"><div class="foot"></div></div>
+    </div>
+
+    <div class="shadow" id="shadow"></div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var scene    = document.getElementById('scene');
+    var head     = document.getElementById('head');
+    var pupilL   = document.getElementById('pupilL');
+    var pupilR   = document.getElementById('pupilR');
+    var eyeL     = document.getElementById('eyeL');
+    var eyeR     = document.getElementById('eyeR');
+    var mouth    = document.getElementById('mouth');
+    var antenna  = document.getElementById('antenna');
+    var armL     = document.getElementById('armL');
+    var armR     = document.getElementById('armR');
+    var blushL   = document.getElementById('blushL');
+    var blushR   = document.getElementById('blushR');
+    var machine  = document.getElementById('machine');
+    var shadow   = document.getElementById('shadow');
+    var thoughtEl= document.getElementById('thought');
+    var lights   = document.querySelectorAll('.light');
+    var steams   = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3')];
+
+    var idleThoughts = ["Hmm...", "What if...?", "42?", "Does not compute", "Thinking...", "Beep boop", "Is water wet?", "Oh! Nope.", "Why though?", "Loops..."];
+    var closeThoughts = ["Oh! Hello!", "Hi there!", "You're close!", "Hey friend!", "Boop?", "I see you!", "Hehe"];
+    var fastThoughts = ["Whoa slow down!", "So fast!", "Speedy cursor!", "Zoom zoom!", "Can't keep up!"];
+    var clickThoughts = ["Ouch!", "Hey! That tickles!", "Boop!", "Zap!", "Clank clank!", "I felt that!"];
+
+    var currentThought = '';
+    var thoughtTimer = null;
+    var mouseSpeed = 0;
+    var lastX = 0;
+    var lastY = 0;
+    var isClose = false;
+    var idleIdx = 0;
+
+    function setThought(text) {
+      if (text === currentThought) return;
+      currentThought = text;
+      thoughtEl.style.opacity = '0';
+      setTimeout(function() {
+        thoughtEl.textContent = text;
+        thoughtEl.style.opacity = '1';
+      }, 200);
+    }
+
+    function scheduleIdleThought() {
+      clearTimeout(thoughtTimer);
+      thoughtTimer = setTimeout(function() {
+        idleIdx = (idleIdx + 1) % idleThoughts.length;
+        setThought(idleThoughts[idleIdx]);
+        scheduleIdleThought();
+      }, 4000);
+    }
+
+    scheduleIdleThought();
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    document.addEventListener('mousemove', function(e) {
+      var rect = scene.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height * 0.55;
+      var dx = e.clientX - cx;
+      var dy = e.clientY - cy;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+
+      var sx = e.clientX - lastX;
+      var sy = e.clientY - lastY;
+      mouseSpeed = Math.sqrt(sx * sx + sy * sy);
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      var close = dist < 200;
+      var veryClose = dist < 110;
+
+      var tiltX = clamp(dx / 30, -8, 8);
+      var tiltY = clamp(dy / 50, -4, 4);
+      head.style.transform = 'rotate(' + (tiltX * 0.5) + 'deg) translateY(' + (tiltY * 0.3) + 'px)';
+
+      machine.classList.remove('idle');
+      machine.style.transform = 'translateX(-50%) rotate(' + (tiltX * 0.15) + 'deg)';
+
+      var eyeRectL = eyeL.getBoundingClientRect();
+      var eyeRectR = eyeR.getBoundingClientRect();
+
+      var eyesArr = [
+        { pupil: pupilL, rect: eyeRectL },
+        { pupil: pupilR, rect: eyeRectR }
+      ];
+
+      for (var i = 0; i < eyesArr.length; i++) {
+        var pupil = eyesArr[i].pupil;
+        var er = eyesArr[i].rect;
+        var ecx = er.left + er.width / 2;
+        var ecy = er.top + er.height / 2;
+        var edx = e.clientX - ecx;
+        var edy = e.clientY - ecy;
+        var angle = Math.atan2(edy, edx);
+        var maxR = 9;
+        var r = Math.min(maxR, Math.sqrt(edx * edx + edy * edy) / 15);
+        var px = Math.cos(angle) * r;
+        var py = Math.sin(angle) * r;
+        pupil.style.transform = 'translate(calc(-50% + ' + px + 'px), calc(-50% + ' + py + 'px))';
+      }
+
+      if (veryClose) {
+        eyeL.classList.add('wide');
+        eyeR.classList.add('wide');
+        pupilL.classList.add('big');
+        pupilR.classList.add('big');
+      } else {
+        eyeL.classList.remove('wide');
+        eyeR.classList.remove('wide');
+        pupilL.classList.remove('big');
+        pupilR.classList.remove('big');
+      }
+
+      if (veryClose) {
+        blushL.classList.add('visible');
+        blushR.classList.add('visible');
+      } else {
+        blushL.classList.remove('visible');
+        blushR.classList.remove('visible');
+      }
+
+      mouth.classList.remove('surprised', 'happy');
+      if (mouseSpeed > 40) {
+        mouth.classList.add('surprised');
+      } else if (veryClose) {
+        mouth.classList.add('happy');
+      }
+
+      if (close) {
+        antenna.classList.add('excited');
+      } else {
+        antenna.classList.remove('excited');
+      }
+
+      for (var j = 0; j < lights.length; j++) {
+        if (close) { lights[j].classList.add('fast'); }
+        else { lights[j].classList.remove('fast'); }
+      }
+
+      for (var k = 0; k < steams.length; k++) {
+        if (veryClose) { steams[k].classList.add('fast'); }
+        else { steams[k].classList.remove('fast'); }
+      }
+
+      if (close && !isClose) {
+        armR.classList.add('wave');
+        setTimeout(function() { armR.classList.remove('wave'); }, 1800);
+      }
+
+      shadow.style.transform = veryClose ? 'scaleX(0.85)' : 'scaleX(1)';
+
+      if (mouseSpeed > 50) {
+        setThought(fastThoughts[Math.floor(Math.random() * fastThoughts.length)]);
+        clearTimeout(thoughtTimer);
+        scheduleIdleThought();
+      } else if (veryClose && !isClose) {
+        setThought(closeThoughts[Math.floor(Math.random() * closeThoughts.length)]);
+        clearTimeout(thoughtTimer);
+        scheduleIdleThought();
+      }
+
+      isClose = close;
+    });
+
+    var idleTimeout;
+    document.addEventListener('mousemove', function() {
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(function() {
+        machine.classList.add('idle');
+        machine.style.transform = '';
+        head.style.transform = '';
+        eyeL.classList.remove('wide');
+        eyeR.classList.remove('wide');
+        pupilL.classList.remove('big');
+        pupilR.classList.remove('big');
+        blushL.classList.remove('visible');
+        blushR.classList.remove('visible');
+        mouth.classList.remove('surprised', 'happy');
+        antenna.classList.remove('excited');
+        for (var j = 0; j < lights.length; j++) lights[j].classList.remove('fast');
+        for (var k = 0; k < steams.length; k++) steams[k].classList.remove('fast');
+        pupilL.style.transform = 'translate(-50%, -50%)';
+        pupilR.style.transform = 'translate(-50%, -50%)';
+        shadow.style.transform = '';
+      }, 2000);
+    });
+
+    document.addEventListener('click', function(e) {
+      setThought(clickThoughts[Math.floor(Math.random() * clickThoughts.length)]);
+      clearTimeout(thoughtTimer);
+      scheduleIdleThought();
+
+      machine.style.transition = 'transform .1s ease';
+      machine.style.transform = 'translateX(-50%) scaleY(0.92) scaleX(1.06)';
+      setTimeout(function() {
+        machine.style.transition = 'transform .3s ease';
+        machine.style.transform = 'translateX(-50%) scaleY(1) scaleX(1)';
+      }, 120);
+
+      var spark = document.createElement('div');
+      spark.className = 'click-spark';
+      spark.style.left = e.clientX + 'px';
+      spark.style.top = e.clientY + 'px';
+      for (var i = 0; i < 8; i++) {
+        var s = document.createElement('span');
+        var a = (Math.PI * 2 / 8) * i;
+        var d = 20 + Math.random() * 25;
+        var tx = Math.cos(a) * d;
+        var ty = Math.sin(a) * d;
+        s.style.animation = 'sparkBurst .5s ease-out forwards';
+        s.style.transform = 'translate(' + tx + 'px, ' + ty + 'px)';
+        spark.appendChild(s);
+      }
+      document.body.appendChild(spark);
+      setTimeout(function() { spark.remove(); }, 600);
+    });
+  })();
+</script>
+
 </body>
 </html>
