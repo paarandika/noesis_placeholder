@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Machine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Fredoka:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0e6d3;
+    background-image:
+      radial-gradient(circle at 20% 80%, #e8d5b8 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, #f5ead8 0%, transparent 50%);
+    overflow: hidden;
+    cursor: crosshair;
+  }
+
+  .scene {
+    position: relative;
+    width: 500px;
+    height: 620px;
+  }
+
+  /* ===== THOUGHT BUBBLE ===== */
+  .thought-bubble {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 130px;
+    background: #fff;
+    border-radius: 60px;
+    border: 3px solid #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bubbleFloat 3s ease-in-out infinite;
+    box-shadow: 4px 4px 0 #3a3a3a;
+    transition: transform .3s ease, width .4s ease;
+  }
+
+  .bubble-dot {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #3a3a3a;
+    box-shadow: 3px 3px 0 #3a3a3a;
+  }
+  .bubble-dot:nth-child(1) { width: 36px; height: 36px; bottom: -42px; left: 55%; }
+  .bubble-dot:nth-child(2) { width: 22px; height: 22px; bottom: -65px; left: 52%; }
+  .bubble-dot:nth-child(3) { width: 14px; height: 14px; bottom: -80px; left: 48%; }
+
+  .thought-text {
+    font-family: 'Gaegu', cursive;
+    font-size: 26px;
+    font-weight: 700;
+    color: #3a3a3a;
+    text-align: center;
+    padding: 10px 20px;
+    transition: opacity .4s ease;
+  }
+
+  @keyframes bubbleFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+  }
+
+  /* ===== MACHINE ===== */
+  .machine {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform .15s ease-out;
+  }
+
+  /* Head */
+  .head {
+    position: relative;
+    width: 180px;
+    height: 150px;
+    background: #b0b8c4;
+    border: 3px solid #3a3a3a;
+    border-radius: 30px 30px 20px 20px;
+    margin: 0 auto;
+    box-shadow: 4px 4px 0 #3a3a3a;
+    z-index: 2;
+    transition: transform .12s ease-out;
+    transform-origin: bottom center;
+  }
+
+  /* Antenna stem */
+  .head::before {
+    content: '';
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 25px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    transition: transform .2s ease-out;
+    transform-origin: bottom center;
+  }
+
+  .antenna-ball {
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: #ff6b6b;
+    border: 3px solid #3a3a3a;
+    border-radius: 50%;
+    animation: antennaPulse 1.5s ease-in-out infinite;
+    box-shadow: 3px 3px 0 #3a3a3a;
+    transition: transform .2s ease-out;
+  }
+
+  @keyframes antennaPulse {
+    0%, 100% { background: #ff6b6b; }
+    50% { background: #ffeb3b; }
+  }
+
+  /* Excited antenna */
+  .antenna-ball.excited {
+    animation: antennaWiggle .3s ease-in-out infinite;
+  }
+  @keyframes antennaWiggle {
+    0%, 100% { transform: translateX(-50%) rotate(0deg) scale(1.1); }
+    25% { transform: translateX(-50%) rotate(15deg) scale(1.2); }
+    75% { transform: translateX(-50%) rotate(-15deg) scale(1.2); }
+  }
+
+  /* Eyes */
+  .eyes {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding-top: 30px;
+  }
+
+  .eye {
+    width: 40px;
+    height: 46px;
+    background: #fff;
+    border: 3px solid #3a3a3a;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,.1);
+    transition: transform .2s ease;
+  }
+
+  /* Wide eyes on close mouse */
+  .eye.wide {
+    transform: scaleY(1.2) scaleX(1.1);
+  }
+
+  .pupil {
+    width: 16px;
+    height: 16px;
+    background: #3a3a3a;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform .08s ease-out;
+  }
+  .pupil::after {
+    content: '';
+    width: 5px; height: 5px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; right: 2px;
+  }
+
+  /* Big pupil when close */
+  .pupil.big {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Mouth */
+  .mouth {
+    width: 40px;
+    height: 10px;
+    border: 3px solid #3a3a3a;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    margin: 18px auto 0;
+    transition: all .25s ease;
+  }
+  .mouth.surprised {
+    width: 22px;
+    height: 18px;
+    border-radius: 50%;
+    border-top: 3px solid #3a3a3a;
+  }
+  .mouth.happy {
+    width: 50px;
+    height: 14px;
+  }
+
+  /* Cheek bolts */
+  .bolt {
+    position: absolute;
+    width: 14px; height: 14px;
+    background: #8a9bae;
+    border: 2px solid #3a3a3a;
+    border-radius: 50%;
+    top: 55%;
+  }
+  .bolt.left { left: 12px; }
+  .bolt.right { right: 12px; }
+  .bolt::before {
+    content: '+';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: bold;
+    color: #3a3a3a;
+    line-height: 1;
+  }
+
+  /* Blush on cheeks */
+  .blush {
+    position: absolute;
+    width: 28px;
+    height: 16px;
+    background: rgba(255,140,140,.0);
+    border-radius: 50%;
+    top: 62%;
+    transition: background .4s ease;
+  }
+  .blush.left { left: 6px; }
+  .blush.right { right: 6px; }
+  .blush.visible { background: rgba(255,140,140,.45); }
+
+  /* Neck */
+  .neck {
+    width: 40px;
+    height: 20px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-top: none;
+    margin: 0 auto;
+    z-index: 1;
+    position: relative;
+  }
+
+  /* Body */
+  .body {
+    width: 220px;
+    height: 160px;
+    background: #c0c8d4;
+    border: 3px solid #3a3a3a;
+    border-radius: 20px;
+    margin: -3px auto 0;
+    position: relative;
+    box-shadow: 4px 4px 0 #3a3a3a;
+  }
+
+  .chest-panel {
+    width: 100px;
+    height: 70px;
+    background: #e8ecf0;
+    border: 3px solid #3a3a3a;
+    border-radius: 10px;
+    margin: 20px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    flex-wrap: wrap;
+  }
+
+  .light {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid #3a3a3a;
+    transition: background .2s;
+  }
+  .light:nth-child(1) { background: #ff6b6b; animation: blink1 2s infinite; }
+  .light:nth-child(2) { background: #4ecdc4; animation: blink2 1.5s infinite; }
+  .light:nth-child(3) { background: #ffeb3b; animation: blink3 1.8s infinite; }
+  .light:nth-child(4) { background: #45b7d1; animation: blink1 2.2s .5s infinite; }
+  .light:nth-child(5) { background: #96e6a1; animation: blink2 1.3s .3s infinite; }
+  .light:nth-child(6) { background: #dda0dd; animation: blink3 2.5s .8s infinite; }
+
+  /* Fast blink when mouse is close */
+  .light.fast { animation-duration: .3s !important; }
+
+  @keyframes blink1 { 0%,49%{opacity:1}50%,100%{opacity:.2} }
+  @keyframes blink2 { 0%,39%{opacity:.2}40%,79%{opacity:1}80%,100%{opacity:.2} }
+  @keyframes blink3 { 0%,59%{opacity:1}60%,100%{opacity:.3} }
+
+  /* Arms */
+  .arm {
+    position: absolute;
+    width: 30px;
+    height: 90px;
+    background: #b0b8c4;
+    border: 3px solid #3a3a3a;
+    border-radius: 15px;
+    top: 20px;
+    box-shadow: 3px 3px 0 #3a3a3a;
+    transform-origin: top center;
+    transition: transform .3s ease;
+  }
+  .arm.left { left: -35px; transform: rotate(3deg); }
+  .arm.right { right: -35px; transform: rotate(-3deg); }
+
+  .hand {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px; height: 22px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-radius: 50%;
+    box-shadow: 2px 2px 0 #3a3a3a;
+  }
+
+  /* Wave arm */
+  .arm.wave {
+    animation: waveArm .6s ease-in-out infinite;
+  }
+  @keyframes waveArm {
+    0%, 100% { transform: rotate(-20deg); }
+    50% { transform: rotate(-40deg); }
+  }
+
+  /* Legs */
+  .legs {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: -3px;
+  }
+  .leg {
+    width: 36px;
+    height: 50px;
+    background: #8a9bae;
+    border: 3px solid #3a3a3a;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 3px 3px 0 #3a3a3a;
+    position: relative;
+  }
+  .foot {
+    position: absolute;
+    bottom: -10px;
+    left: -8px;
+    width: 52px;
+    height: 16px;
+    background: #707a86;
+    border: 3px solid #3a3a3a;
+    border-radius: 6px 12px 8px 8px;
+    box-shadow: 3px 3px 0 #3a3a3a;
+  }
+
+  .shadow {
+    width: 240px;
+    height: 20px;
+    background: rgba(0,0,0,.12);
+    border-radius: 50%;
+    margin: 18px auto 0;
+    transition: transform .3s ease;
+  }
+
+  /* Steam */
+  .steam-wrap { position: relative; height: 0; }
+  .steam {
+    position: absolute;
+    top: -55px;
+    border-radius: 50%;
+    background: rgba(180,190,200,.5);
+    animation: steamRise 3s ease-out infinite;
+  }
+  .steam:nth-child(1) { left: 30px; width: 18px; height: 18px; animation-delay: 0s; }
+  .steam:nth-child(2) { left: 50px; width: 14px; height: 14px; animation-delay: 1s; }
+  .steam:nth-child(3) { left: 130px; width: 16px; height: 16px; animation-delay: 2s; }
+
+  /* Faster steam when processing hard */
+  .steam.fast { animation-duration: 1.2s !important; }
+
+  @keyframes steamRise {
+    0% { transform: translateY(0) scale(1); opacity: .6; }
+    100% { transform: translateY(-40px) scale(2); opacity: 0; }
+  }
+
+  /* Idle gentle sway */
+  .machine.idle {
+    animation: idleSway 4s ease-in-out infinite;
+  }
+  @keyframes idleSway {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    50% { transform: translateX(-50%) rotate(.8deg); }
+  }
+
+  /* Click spark */
+  .click-spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .click-spark span {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: #ffeb3b;
+    border-radius: 50%;
+    animation: sparkBurst .6s ease-out forwards;
+  }
+  @keyframes sparkBurst {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+
+  <div class="thought-bubble" id="bubble">
+    <div class="bubble-dot"></div>
+    <div class="bubble-dot"></div>
+    <div class="bubble-dot"></div>
+    <div class="thought-text" id="thought">Hmm...</div>
+  </div>
+
+  <div class="machine idle" id="machine">
+    <div class="steam-wrap">
+      <div class="steam" id="s1"></div>
+      <div class="steam" id="s2"></div>
+      <div class="steam" id="s3"></div>
+    </div>
+
+    <div class="head" id="head">
+      <div class="antenna-ball" id="antenna"></div>
+      <div class="eyes">
+        <div class="eye" id="eyeL"><div class="pupil" id="pupilL"></div></div>
+        <div class="eye" id="eyeR"><div class="pupil" id="pupilR"></div></div>
+      </div>
+      <div class="mouth" id="mouth"></div>
+      <div class="bolt left"></div>
+      <div class="bolt right"></div>
+      <div class="blush left" id="blushL"></div>
+      <div class="blush right" id="blushR"></div>
+    </div>
+
+    <div class="neck"></div>
+
+    <div class="body">
+      <div class="chest-panel" id="panel">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+      </div>
+      <div class="arm left" id="armL"><div class="hand"></div></div>
+      <div class="arm right" id="armR"><div class="hand"></div></div>
+    </div>
+
+    <div class="legs">
+      <div class="leg"><div class="foot"></div></div>
+      <div class="leg"><div class="foot"></div></div>
+    </div>
+
+    <div class="shadow" id="shadow"></div>
+  </div>
+</div>
+
+<script>
+  const scene    = document.getElementById('scene');
+  const head     = document.getElementById('head');
+  const pupilL   = document.getElementById('pupilL');
+  const pupilR   = document.getElementById('pupilR');
+  const eyeL     = document.getElementById('eyeL');
+  const eyeR     = document.getElementById('eyeR');
+  const mouth    = document.getElementById('mouth');
+  const antenna  = document.getElementById('antenna');
+  const armL     = document.getElementById('armL');
+  const armR     = document.getElementById('armR');
+  const blushL   = document.getElementById('blushL');
+  const blushR   = document.getElementById('blushR');
+  const machine  = document.getElementById('machine');
+  const shadow   = document.getElementById('shadow');
+  const bubble   = document.getElementById('bubble');
+  const thoughtEl= document.getElementById('thought');
+  const lights   = document.querySelectorAll('.light');
+  const steams   = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3')];
+
+  // --- Thoughts ---
+  const idleThoughts = ["Hmm...", "What if... 🤔", "42?", "Does not compute", "Thinking...", "Beep boop 🤖", "Is water wet?", "💡 Oh! Nope.", "Why though?", "∞ loops..."];
+  const closeThoughts = ["Oh! Hello!", "Hi there! 👋", "You're close!", "Hey friend!", "Boop?", "I see you! 👀", "*blushes*"];
+  const fastThoughts = ["Whoa slow down!", "So fast! 💨", "Speedy cursor!", "Zoom zoom!", "Can't keep up!"];
+  const clickThoughts = ["Ouch! 😵", "Hey! That tickles!", "Boop!", "⚡ Zap!", "*clank clank*", "I felt that!"];
+
+  let currentThought = '';
+  let thoughtTimer = null;
+  let mouseSpeed = 0;
+  let lastX = 0, lastY = 0;
+  let isClose = false;
+  let idleIdx = 0;
+  let wasIdle = true;
+
+  function setThought(text) {
+    if (text === currentThought) return;
+    currentThought = text;
+    thoughtEl.style.opacity = '0';
+    setTimeout(() => {
+      thoughtEl.textContent = text;
+      thoughtEl.style.opacity = '1';
+    }, 200);
+  }
+
+  function scheduleIdleThought() {
+    clearTimeout(thoughtTimer);
+    thoughtTimer = setTimeout(() => {
+      idleIdx = (idleIdx + 1) % idleThoughts.length;
+      setThought(idleThoughts[idleIdx]);
+      scheduleIdleThought();
+    }, 4000);
+  }
+
+  scheduleIdleThought();
+
+  // --- Mouse tracking ---
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  document.addEventListener('mousemove', (e) => {
+    const rect = scene.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height * 0.55;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const dist = Math.hypot(dx, dy);
+
+    // Speed
+    const sx = e.clientX - lastX;
+    const sy = e.clientY - lastY;
+    mouseSpeed = Math.hypot(sx, sy);
+    lastX = e.clientX;
+    lastY = e.clientY;
+
+    // Proximity zones
+    const close = dist < 200;
+    const veryClose = dist < 110;
+
+    // Head tilt toward mouse
+    const tiltX = clamp(dx / 30, -8, 8);
+    const tiltY = clamp(dy / 50, -4, 4);
+    head.style.transform = `rotate(${tiltX * 0.5}deg) translateY(${tiltY * 0.3}px)`;
+
+    // Body lean
+    machine.classList.remove('idle');
+    machine.style.transform = `translateX(-50%) rotate(${tiltX * 0.15}deg)`;
+
+    // Pupil tracking
+    const eyeRectL = eyeL.getBoundingClientRect();
+    const eyeRectR = eyeR.getBoundingClientRect();
+
+    [
+      { pupil: pupilL, rect: eyeRectL },
+      { pupil: pupilR, rect: eyeRectR }
+    ].forEach(({ pupil, rect }) => {
+      const ecx = rect.left + rect.width / 2;
+      const ecy = rect.top + rect.height / 2;
+      const edx = e.clientX - ecx;
+      const edy = e.clientY - ecy;
+      const angle = Math.atan2(edy, edx);
+      const maxR = 9;
+      const r = Math.min(maxR, Math.hypot(edx, edy) / 15);
+      const px = Math.cos(angle) * r;
+      const py = Math.sin(angle) * r;
+      pupil.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`;
+    });
+
+    // Eye widening when close
+    eyeL.classList.toggle('wide', veryClose);
+    eyeR.classList.toggle('wide', veryClose);
+    pupilL.classList.toggle('big', veryClose);
+    pupilR.classList.toggle('big', veryClose);
+
+    // Blush
+    blushL.classList.toggle('visible', veryClose);
+    blushR.classList.toggle('visible', veryClose);
+
+    // Mouth
+    mouth.classList.remove('surprised', 'happy');
+    if (mouseSpeed > 40) {
+      mouth.classList.add('surprised');
+    } else if (veryClose) {
+      mouth.classList.add('happy');
+    }
+
+    // Antenna
+    antenna.classList.toggle('excited', close);
+
+    // Lights go fast when close
+    lights.forEach(l => l.classList.toggle('fast', close));
+
+    // Steam goes fast when close
+    steams.forEach(s => s.classList.toggle('fast', veryClose));
+
+    // Arm wave when close
+    if (close && !isClose) {
+      armR.classList.add('wave');
+      setTimeout(() => armR.classList.remove('wave'), 1800);
+    }
+
+    // Shadow
+    shadow.style.transform = `scaleX(${veryClose ? 0.85 : 1})`;
+
+    // Thoughts based on state
+    if (mouseSpeed > 50) {
+      setThought(fastThoughts[Math.floor(Math.random() * fastThoughts.length)]);
+      clearTimeout(thoughtTimer);
+      scheduleIdleThought();
+      wasIdle = false;
+    } else if (veryClose && !isClose) {
+      setThought(closeThoughts[Math.floor(Math.random() * closeThoughts.length)]);
+      clearTimeout(thoughtTimer);
+      scheduleIdleThought();
+      wasIdle = false;
+    }
+
+    isClose = close;
+  });
+
+  // Reset to idle when mouse leaves
+  let idleTimeout;
+  document.addEventListener('mousemove', () => {
+    clearTimeout(idleTimeout);
+    idleTimeout = setTimeout(() => {
+      machine.classList.add('idle');
+      machine.style.transform = '';
+      head.style.transform = '';
+      eyeL.classList.remove('wide');
+      eyeR.classList.remove('wide');
+      pupilL.classList.remove('big');
+      pupilR.classList.remove('big');
+      blushL.classList.remove('visible');
+      blushR.classList.remove('visible');
+      mouth.classList.remove('surprised', 'happy');
+      antenna.classList.remove('excited');
+      lights.forEach(l => l.classList.remove('fast'));
+      steams.forEach(s => s.classList.remove('fast'));
+      pupilL.style.transform = 'translate(-50%, -50%)';
+      pupilR.style.transform = 'translate(-50%, -50%)';
+      shadow.style.transform = '';
+    }, 2000);
+  });
+
+  // --- Click reaction ---
+  document.addEventListener('click', (e) => {
+    setThought(clickThoughts[Math.floor(Math.random() * clickThoughts.length)]);
+    clearTimeout(thoughtTimer);
+    scheduleIdleThought();
+
+    // Quick squash & stretch
+    machine.style.transition = 'transform .1s ease';
+    machine.style.transform = `translateX(-50%) scaleY(0.92) scaleX(1.06)`;
+    setTimeout(() => {
+      machine.style.transition = 'transform .3s ease';
+      machine.style.transform = `translateX(-50%) scaleY(1) scaleX(1)`;
+    }, 120);
+
+    // Sparks
+    const spark = document.createElement('div');
+    spark.className = 'click-spark';
+    spark.style.left = e.clientX + 'px';
+    spark.style.top = e.clientY + 'px';
+    for (let i = 0; i < 8; i++) {
+      const s = document.createElement('span');
+      const angle = (Math.PI * 2 / 8) * i;
+      const dist = 20 + Math.random() * 25;
+      s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+      s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+      s.style.animation = `sparkBurst .5s ease-out forwards`;
+      s.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
+      spark.appendChild(s);
+    }
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 600);
+  });
+</script>
+
+</body>
+</html>
